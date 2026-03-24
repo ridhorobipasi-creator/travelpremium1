@@ -2,37 +2,7 @@
   "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "functions": {
-    "backend/api/index.php": {
-      "runtime": "vercel-php@0.7.2"
-    }
-  },
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "backend/api/index.php"
-    },
-    {
-      "src": "/auth/(.*)",
-      "dest": "backend/api/index.php"
-    },
-    {
-      "src": "/up",
-      "dest": "backend/api/index.php"
-    },
-    {
-      "src": "/storage/(.*)",
-      "dest": "backend/public/storage/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "frontend/dist/$1",
-      "check": true
-    },
-    {
-      "src": "/admin/(.*)",
-      "dest": "frontend/dist/index.html"
-    },
     {
       "src": "/(.*)",
       "dest": "frontend/dist/index.html"

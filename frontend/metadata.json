@@ -1,0 +1,7 @@
+{
+  "name": "Wonderful Toba",
+  "description": "Platform wisata Sumatera Utara modern untuk booking paket tour, rental mobil, dan manajemen destinasi Danau Toba.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

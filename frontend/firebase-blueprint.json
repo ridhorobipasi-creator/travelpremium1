@@ -1,0 +1,124 @@
+{
+  "entities": {
+    "provinces": {
+      "title": "Province",
+      "description": "Indonesian provinces",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the province" },
+        "description": { "type": "string", "description": "Brief description" },
+        "image": { "type": "string", "description": "Featured image URL" }
+      },
+      "required": ["name"]
+    },
+    "cities": {
+      "title": "City",
+      "description": "Cities within provinces",
+      "type": "object",
+      "properties": {
+        "provinceId": { "type": "string", "description": "Reference to province" },
+        "name": { "type": "string", "description": "Name of the city" },
+        "description": { "type": "string", "description": "Brief description" },
+        "image": { "type": "string", "description": "Featured image URL" }
+      },
+      "required": ["provinceId", "name"]
+    },
+    "destinations": {
+      "title": "Destination",
+      "description": "Tourist destinations",
+      "type": "object",
+      "properties": {
+        "cityId": { "type": "string", "description": "Reference to city" },
+        "name": { "type": "string", "description": "Name of destination" },
+        "description": { "type": "string", "description": "Full description" },
+        "category": { "type": "string", "description": "Category (Nature, Culture, etc.)" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "location": { "type": "object", "properties": { "lat": { "type": "number" }, "lng": { "type": "number" } } }
+      },
+      "required": ["cityId", "name"]
+    },
+    "packages": {
+      "title": "Tour Package",
+      "description": "Tour packages available for booking",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "duration": { "type": "string", "description": "e.g. 3 Days 2 Nights" },
+        "cityId": { "type": "string" },
+        "includes": { "type": "array", "items": { "type": "string" } },
+        "excludes": { "type": "array", "items": { "type": "string" } },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["active", "inactive"] }
+      },
+      "required": ["name", "price", "status"]
+    },
+    "cars": {
+      "title": "Car Rental",
+      "description": "Cars available for rent",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string", "description": "e.g. SUV, MPV" },
+        "pricePerDay": { "type": "number" },
+        "status": { "type": "string", "enum": ["available", "booked"] },
+        "image": { "type": "string" }
+      },
+      "required": ["name", "pricePerDay", "status"]
+    },
+    "bookings": {
+      "title": "Booking",
+      "description": "User bookings for packages or cars",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "type": { "type": "string", "enum": ["package", "car", "custom"] },
+        "itemId": { "type": "string" },
+        "startDate": { "type": "string", "format": "date" },
+        "endDate": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "cancelled"] },
+        "totalPrice": { "type": "number" },
+        "customerDetails": { "type": "object", "properties": { "name": { "type": "string" }, "phone": { "type": "string" }, "email": { "type": "string" } } }
+      },
+      "required": ["userId", "type", "status", "totalPrice"]
+    },
+    "users": {
+      "title": "User",
+      "description": "User profiles and roles",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "staff", "user"] },
+        "name": { "type": "string" },
+        "photoURL": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    },
+    "blog": {
+      "title": "Blog Post",
+      "description": "Articles and news",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "authorId": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "image": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "content", "authorId"]
+    }
+  },
+  "firestore": {
+    "provinces": { "schema": "provinces", "description": "List of provinces" },
+    "cities": { "schema": "cities", "description": "List of cities" },
+    "destinations": { "schema": "destinations", "description": "List of destinations" },
+    "packages": { "schema": "packages", "description": "Tour packages" },
+    "cars": { "schema": "cars", "description": "Rental cars" },
+    "bookings": { "schema": "bookings", "description": "User bookings" },
+    "users": { "schema": "users", "description": "User profiles" },
+    "blog": { "schema": "blog", "description": "Blog posts" }
+  }
+}

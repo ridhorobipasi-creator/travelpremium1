@@ -31,3 +31,5 @@ frontend/pnpm-debug.log*
 # OS Files
 .DS_Store
 Thumbs.db
+
+.vercel

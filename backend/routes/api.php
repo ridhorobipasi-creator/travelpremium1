@@ -10,6 +10,14 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Artisan;
+
+// Setup Endpoint for Vercel
+Route::get('setup', function () {
+    Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
+    return response()->json(['message' => 'Database migrated and seeded successfully!']);
+});
+
 // ── Public Routes ──────────────────────────────────────────────
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);

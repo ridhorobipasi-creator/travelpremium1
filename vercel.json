@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build && cd ../backend && composer install --no-dev && (php artisan migrate:fresh --seed --force || true)",
+  "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "functions": {
-    "api/index.php": {
+    "backend/api/index.php": {
       "runtime": "vercel-php@0.7.2",
       "config": {
         "maxExecutionTime": 60
@@ -13,15 +13,15 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/index.php"
+      "dest": "backend/api/index.php"
     },
     {
       "src": "/auth/(.*)",
-      "dest": "api/index.php"
+      "dest": "backend/api/index.php"
     },
     {
       "src": "/up",
-      "dest": "api/index.php"
+      "dest": "backend/api/index.php"
     },
     {
       "src": "/storage/(.*)",

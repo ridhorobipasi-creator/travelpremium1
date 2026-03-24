@@ -4,10 +4,7 @@
   "outputDirectory": "frontend/dist",
   "functions": {
     "backend/api/index.php": {
-      "runtime": "vercel-php@0.7.2",
-      "config": {
-        "maxExecutionTime": 60
-      }
+      "runtime": "vercel-php@0.7.2"
     }
   },
   "routes": [

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build && cd ../backend && composer install --no-dev && php artisan migrate:fresh --seed --force",
+  "buildCommand": "cd frontend && npm install && npm run build && cd ../backend && composer install --no-dev && (php artisan migrate:fresh --seed --force || true)",
   "outputDirectory": "frontend/dist",
   "functions": {
     "api/index.php": {

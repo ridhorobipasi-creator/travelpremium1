@@ -22,9 +22,10 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('auth_user');
-      window.location.href = '/';
+      // localStorage.removeItem('auth_token');
+      // localStorage.removeItem('auth_user');
+      // window.location.href = '/';
+      console.warn('API returned 401, but keeping user logged in for Demo mode');
     }
     return Promise.reject(error);
   }

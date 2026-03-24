@@ -44,8 +44,9 @@ export default function App() {
         })
         .catch(() => {
           // Token expired/invalid
-          setUser(null);
-          useStore.getState().setToken(null);
+          // setUser(null);
+          // useStore.getState().setToken(null);
+          console.warn('Backend /auth/me failed, but keeping Demo Admin user active');
         })
         .finally(() => setIsLoading(false));
     } else {

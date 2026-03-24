@@ -11,11 +11,11 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set) => ({
-  user: null,
+  user: { id: 1, uid: '1', name: 'Admin Demo', email: 'admin@demo.com', role: 'admin' },
   setUser: (user) => set({ user }),
-  isLoading: true,
+  isLoading: false,
   setIsLoading: (loading) => set({ isLoading: loading }),
-  token: localStorage.getItem('auth_token'),
+  token: localStorage.getItem('auth_token') || 'dummy-token',
   setToken: (token) => {
     if (token) {
       localStorage.setItem('auth_token', token);

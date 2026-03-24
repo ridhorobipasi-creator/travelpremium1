@@ -1,7 +1,44 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "version": 2,
+  "buildCommand": "cd frontend && npm install && npm run build && cd ../backend && composer install --no-dev && php artisan migrate:fresh --seed --force",
   "outputDirectory": "frontend/dist",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "functions": {
+    "api/index.php": {
+      "runtime": "vercel-php@0.7.2",
+      "config": {
+        "maxExecutionTime": 60
+      }
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/index.php"
+    },
+    {
+      "src": "/auth/(.*)",
+      "dest": "api/index.php"
+    },
+    {
+      "src": "/up",
+      "dest": "api/index.php"
+    },
+    {
+      "src": "/storage/(.*)",
+      "dest": "backend/public/storage/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/dist/$1",
+      "check": true
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "frontend/dist/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/dist/index.html"
+    }
   ]
 }

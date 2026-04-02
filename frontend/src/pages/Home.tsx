@@ -6,6 +6,7 @@ import { MapPin, Star, ArrowRight, Shield, Clock, Heart, Globe, Award, Compass, 
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import api from '../lib/api';
+import { fallbackPackages } from '../utils/fallbackData';
 
 const testimonials = [
   {
@@ -39,9 +40,10 @@ export default function Home() {
     const fetchFeatured = async () => {
       try {
         const res = await api.get('/packages');
-        setFeaturedPackages(res.data.slice(0, 3));
+        setFeaturedPackages(Array.isArray(res.data) && res.data.length > 0 ? res.data.slice(0, 3) : fallbackPackages.slice(0, 3));
       } catch (err) {
-        console.error(err);
+        console.warn('API fetch error, using fallback packages:', err);
+        setFeaturedPackages(fallbackPackages.slice(0, 3));
       } finally {
         setLoading(false);
       }

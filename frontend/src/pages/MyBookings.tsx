@@ -21,14 +21,14 @@ export default function MyBookings() {
       try {
         const res = await api.get('/bookings');
         // Map API response (snake_case) to Frontend model (camelCase)
-        const mappedData = res.data.map((b: any) => ({
+        const mappedData = Array.isArray(res.data) ? res.data.map((b: any) => ({
           ...b,
           startDate: b.start_date,
           endDate: b.end_date,
           totalPrice: Number(b.total_price),
           itemName: b.item_details?.name || (b.type === 'package' ? 'Paket Wisata' : 'Rental Mobil'),
           itemImage: b.item_details?.image
-        }));
+        })) : [];
         setBookings(mappedData);
       } catch (err) {
         console.error(err);

@@ -19,7 +19,13 @@ api.interceptors.request.use((config) => {
 
 // Handle 401 globally — clear token and redirect to home
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If the response is HTML instead of JSON (typical of Vercel SPA fallback routing on missing API endpoints)
+    if (typeof response.data === 'string' && response.data.trim().startsWith('<')) {
+      return Promise.reject(new Error('Received HTML instead of JSON. The API endpoint route may be incorrect.'));
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       // localStorage.removeItem('auth_token');

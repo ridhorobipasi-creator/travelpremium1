@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { Package, City } from '../types';
+import { fallbackPackages, fallbackCities } from '../utils/fallbackData';
 import PackageCard from '../components/PackageCard';
 import { Search, SlidersHorizontal, MapPin, Calendar, Users, ArrowRight, Compass } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,10 +35,12 @@ export default function Packages() {
           api.get('/packages'),
           api.get('/cities'),
         ]);
-        setPackages(pkgRes.data);
-        setCities(cityRes.data);
+        setPackages(Array.isArray(pkgRes.data) && pkgRes.data.length > 0 ? pkgRes.data : fallbackPackages);
+        setCities(Array.isArray(cityRes.data) && cityRes.data.length > 0 ? cityRes.data : fallbackCities);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.warn('API error, using fallback data:', error);
+        setPackages(fallbackPackages);
+        setCities(fallbackCities);
       } finally {
         setLoading(false);
       }

@@ -5,6 +5,7 @@ import CarCard from '../components/CarCard';
 import { Search, SlidersHorizontal, Car as CarIcon, ArrowRight, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
+import { fallbackCars } from '../utils/fallbackData';
 
 export default function Cars() {
   const [cars, setCars] = useState<Car[]>([]);
@@ -16,9 +17,10 @@ export default function Cars() {
     const fetchData = async () => {
       try {
         const res = await api.get('/cars');
-        setCars(res.data);
+        setCars(Array.isArray(res.data) && res.data.length > 0 ? res.data : fallbackCars);
       } catch (error) {
         console.error('Error fetching data:', error);
+        setCars(fallbackCars);
       } finally {
         setLoading(false);
       }

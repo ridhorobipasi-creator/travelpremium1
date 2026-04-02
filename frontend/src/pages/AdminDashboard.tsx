@@ -53,14 +53,17 @@ export default function AdminDashboard() {
         api.get(isPublic ? '/blogs' : '/blogs')
       ]);
 
-      const bookings = bookingsRes.data;
+      const bookings = Array.isArray(bookingsRes.data) ? bookingsRes.data : [];
+      const packagesData = Array.isArray(packagesRes.data) ? packagesRes.data : [];
+      const blogsData = Array.isArray(blogRes.data) ? blogRes.data : [];
+      
       const revenue = bookings.reduce((acc: number, curr: any) => acc + (Number(curr.total_price) || 0), 0);
 
       setStats({
         totalBookings: bookings.length,
         totalRevenue: revenue,
-        activePackages: packagesRes.data.filter((d: any) => d.status === 'active').length,
-        totalBlogs: blogRes.data.length
+        activePackages: packagesData.filter((d: any) => d.status === 'active').length,
+        totalBlogs: blogsData.length
       });
 
       // Map snake_case to frontend expected format

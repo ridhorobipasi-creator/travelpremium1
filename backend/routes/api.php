@@ -12,30 +12,30 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\GalleryController;
 use Illuminate\Support\Facades\Route;
 
-// ── Public Routes ──────────────────────────────────────────────
-Route::prefix('auth')->group(function () {
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login',    [AuthController::class, 'login']);
+// ── Public Routes (Throttled) ──────────────────────────────────
+Route::middleware('throttle:60,1')->group(function () {
+    Route::prefix('auth')->group(function () {
+        Route::post('register', [AuthController::class, 'register'])->middleware('throttle:10,1');
+        Route::post('login',    [AuthController::class, 'login'])->middleware('throttle:10,1');
+    });
+
+    // Listing data (Public)
+    Route::get('packages',       [PackageController::class, 'index']);
+    Route::get('packages/{id}',  [PackageController::class, 'show']);
+    Route::get('cars',           [CarController::class, 'index']);
+    Route::get('cars/{id}',      [CarController::class, 'show']);
+    Route::get('blog',           [BlogController::class, 'index']);
+    Route::get('blog/{id}',      [BlogController::class, 'show']);
+    Route::get('cities',         [CityController::class, 'index']);
+
+    // Integrated Feature: Public Reviews & Gallery
+    Route::get('reviews',        [ReviewController::class, 'index']);
+    Route::post('reviews',       [ReviewController::class, 'store'])->middleware('throttle:5,1');
+    Route::get('galleries',      [GalleryController::class, 'index']);
+
+    Route::post('bookings/guest', [BookingController::class, 'store'])->middleware('throttle:5,1');
 });
 
-// Listing data (Public)
-Route::get('packages',       [PackageController::class, 'index']);
-Route::get('packages/{id}',  [PackageController::class, 'show']);
-
-Route::get('cars',           [CarController::class, 'index']);
-Route::get('cars/{id}',      [CarController::class, 'show']);
-
-Route::get('blog',           [BlogController::class, 'index']);
-Route::get('blog/{id}',      [BlogController::class, 'show']);
-
-Route::get('cities',         [CityController::class, 'index']);
-
-// Integrated Feature: Public Reviews & Gallery
-Route::get('reviews',        [ReviewController::class, 'index']);
-Route::post('reviews',       [ReviewController::class, 'store']);
-Route::get('galleries',      [GalleryController::class, 'index']);
-
-Route::post('bookings/guest', [BookingController::class, 'store']);
 
 // ── Authenticated Routes ────────────────────────────────────────
 Route::middleware('auth:sanctum')->group(function () {

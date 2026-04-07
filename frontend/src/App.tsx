@@ -22,6 +22,7 @@ import Cars from './pages/Cars';
 import CarDetail from './pages/CarDetail';
 import Blog from './pages/Blog';
 import BlogDetail from './pages/BlogDetail';
+import Gallery from './pages/Gallery'; // New Page
 import Profile from './pages/Profile';
 import MyBookings from './pages/MyBookings';
 import AdminPortal from './pages/AdminPortal';
@@ -42,16 +43,12 @@ export default function App() {
   const { setUser, setIsLoading, user, isLoading, token } = useStore();
 
   useEffect(() => {
-    // On mount, restore user from token
     if (token) {
       api.get('/auth/me')
         .then((res) => {
           setUser(res.data as UserProfile);
         })
         .catch(() => {
-          // Token expired/invalid
-          // setUser(null);
-          // useStore.getState().setToken(null);
           console.warn('Backend /auth/me failed, but keeping Demo Admin user active');
         })
         .finally(() => setIsLoading(false));
@@ -96,6 +93,7 @@ export default function App() {
               <Route path="/tour/cars/:id" element={<CarDetail />} />
               <Route path="/tour/blog" element={<Blog category="tour" />} />
               <Route path="/tour/blog/:id" element={<BlogDetail />} />
+              <Route path="/tour/gallery" element={<Gallery />} />
 
               {/* Outbound Scope */}
               <Route path="/outbound" element={<Outbound />} />
@@ -103,6 +101,7 @@ export default function App() {
               <Route path="/outbound/package/:slug" element={<PackageDetail />} />
               <Route path="/outbound/blog" element={<Blog category="outbound" />} />
               <Route path="/outbound/blog/:id" element={<BlogDetail />} />
+              <Route path="/outbound/gallery" element={<Gallery />} />
 
               {/* Alias for outbond typos */}
               <Route path="/outbond" element={<Navigate to="/outbound" replace />} />

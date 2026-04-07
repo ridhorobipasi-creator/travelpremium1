@@ -8,15 +8,9 @@ use App\Http\Controllers\CarController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\GalleryController;
 use Illuminate\Support\Facades\Route;
-
-use Illuminate\Support\Facades\Artisan;
-
-// Setup Endpoint for Vercel
-Route::get('setup', function () {
-    Artisan::call('migrate:fresh', ['--seed' => true, '--force' => true]);
-    return response()->json(['message' => 'Database migrated and seeded successfully!']);
-});
 
 // ── Public Routes ──────────────────────────────────────────────
 Route::prefix('auth')->group(function () {
@@ -24,7 +18,7 @@ Route::prefix('auth')->group(function () {
     Route::post('login',    [AuthController::class, 'login']);
 });
 
-// Public routes for listings
+// Listing data (Public)
 Route::get('packages',       [PackageController::class, 'index']);
 Route::get('packages/{id}',  [PackageController::class, 'show']);
 
@@ -35,6 +29,12 @@ Route::get('blog',           [BlogController::class, 'index']);
 Route::get('blog/{id}',      [BlogController::class, 'show']);
 
 Route::get('cities',         [CityController::class, 'index']);
+
+// Integrated Feature: Public Reviews & Gallery
+Route::get('reviews',        [ReviewController::class, 'index']);
+Route::post('reviews',       [ReviewController::class, 'store']);
+Route::get('galleries',      [GalleryController::class, 'index']);
+
 Route::post('bookings/guest', [BookingController::class, 'store']);
 
 // ── Authenticated Routes ────────────────────────────────────────
@@ -68,12 +68,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('blog/{id}',         [BlogController::class, 'update']);
         Route::delete('blog/{id}',      [BlogController::class, 'destroy']);
 
+        // Integrated Features (Admin Management)
+        Route::get('admin/reviews',     [ReviewController::class, 'adminIndex']);
+        Route::put('reviews/{id}/approve', [ReviewController::class, 'approve']);
+        Route::delete('reviews/{id}',   [ReviewController::class, 'destroy']);
+
+        Route::post('galleries',        [GalleryController::class, 'store']);
+        Route::delete('galleries/{id}', [GalleryController::class, 'destroy']);
+
         Route::get('admin/stats',       [AdminController::class, 'stats']);
         Route::get('users',             [UserController::class, 'index']);
         Route::put('users/{id}',        [UserController::class, 'update']);
     });
-
-
 
     // ── Admin only ────────────────────────────────────────────
     Route::middleware('role:admin')->group(function () {

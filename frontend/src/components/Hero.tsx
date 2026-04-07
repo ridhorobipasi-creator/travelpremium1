@@ -18,9 +18,9 @@ export default function Hero() {
 
   const handleSearch = () => {
     if (activeTab === 'tour') {
-      navigate(destination ? `/packages?q=${encodeURIComponent(destination)}` : '/packages');
+      navigate(destination ? `/tour/packages?q=${encodeURIComponent(destination)}` : '/tour/packages');
     } else {
-      navigate(destination ? `/cars?q=${encodeURIComponent(destination)}` : '/cars');
+      navigate(destination ? `/tour/cars?q=${encodeURIComponent(destination)}` : '/tour/cars');
     }
   };
 
@@ -66,7 +66,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-6xl md:text-8xl font-black text-white mb-6 leading-[1.05] tracking-tight"
+            className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-6 leading-[1.05] tracking-tight"
           >
             Discover the <br />
             <span className="text-toba-accent">Magic of</span>

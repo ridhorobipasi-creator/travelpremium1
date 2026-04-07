@@ -3,8 +3,8 @@ import { ChevronLeft, ChevronRight, MapPin, Clock, ArrowRight } from 'lucide-rea
 import { cn } from '../utils/cn';
 import { Link } from 'react-router-dom';
 
-// Data destinasi wisata Sumatera Utara
-const destinations = [
+// Data destinasi wisata Sumatera Utara (Tour)
+const tourDestinations = [
   {
     id: 1,
     region: 'Tobasa, Sumatera Utara',
@@ -57,7 +57,45 @@ const destinations = [
   },
 ];
 
-export default function HeroSlider() {
+const outboundDestinations = [
+  {
+    id: 1,
+    region: 'Toba & Samosir',
+    title: 'Corporate Team Building',
+    description: 'Tingkatkan solidaritas dan komunikasi tim melalui permainan yang dirancang secara profesional di tepi Danau Toba.',
+    duration: '2 Hari 1 Malam',
+    price: 1500000,
+    image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&q=80&w=2000',
+    cardImage: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&q=80&w=600',
+  },
+  {
+    id: 2,
+    region: 'Bukit Lawang',
+    title: 'Jungle Survival Camp',
+    description: 'Uji batas kemampuan tim dalam kondisi ekstrim namun aman. Ekspedisi yang ditujukan untuk top level management.',
+    duration: '3 Hari 2 Malam',
+    price: 2100000,
+    image: 'https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&q=80&w=2000',
+    cardImage: 'https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&q=80&w=600',
+  },
+  {
+    id: 3,
+    region: 'Berastagi',
+    title: 'Fun Family Gathering',
+    description: 'Permainan edukatif dan outbond ringan bagi karyawan bersama keluarga. Menciptakan momen kebersamaan tak ternilai.',
+    duration: '1 Hari',
+    price: 450000,
+    image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=2000',
+    cardImage: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=600',
+  },
+];
+
+interface HeroSliderProps {
+  category?: 'tour' | 'outbound';
+}
+
+export default function HeroSlider({ category = 'tour' }: HeroSliderProps) {
+  const destinations = category === 'outbound' ? outboundDestinations : tourDestinations;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [visibleStart, setVisibleStart] = useState(0);
@@ -183,9 +221,9 @@ export default function HeroSlider() {
           </div>
 
           {/* ── Sisi Kanan: Carousel Kartu ── */}
-          <div className="w-full lg:w-7/12 flex flex-col items-end gap-4">
+          <div className="w-full lg:w-7/12 flex flex-col items-start lg:items-end gap-4 mt-8 lg:mt-0">
             {/* Kartu-kartu */}
-            <div className="flex gap-3 w-full justify-end">
+            <div className="flex gap-3 w-full justify-start lg:justify-end overflow-x-auto snap-x snap-mandatory pb-4 hide-scrollbar md:pb-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {visibleCards.map((dest) => {
                 const realIndex = destinations.findIndex(d => d.id === dest.id);
                 const isActive = realIndex === activeIndex;
@@ -194,10 +232,10 @@ export default function HeroSlider() {
                     key={dest.id}
                     onClick={() => handleCardClick(realIndex)}
                     className={cn(
-                      "relative flex-1 min-w-0 rounded-[1.5rem] overflow-hidden cursor-pointer transition-all duration-500 group",
+                      "relative shrink-0 w-[240px] md:w-auto md:flex-1 min-w-0 rounded-[1.5rem] overflow-hidden cursor-pointer transition-all duration-500 group snap-center",
                       "hover:scale-105 hover:shadow-2xl hover:shadow-black/40",
                       isActive
-                        ? "ring-2 ring-toba-accent ring-offset-2 ring-offset-transparent scale-105 shadow-2xl shadow-black/40"
+                        ? "ring-2 ring-toba-accent ring-offset-2 ring-offset-transparent shadow-2xl shadow-black/40"
                         : "opacity-80 hover:opacity-100"
                     )}
                     style={{ height: '260px' }}

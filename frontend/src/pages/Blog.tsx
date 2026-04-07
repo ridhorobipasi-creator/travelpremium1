@@ -52,7 +52,7 @@ const fallbackPosts: BlogPost[] = [
 
 const categories = ['Semua', 'Destinasi', 'Panduan', 'Petualangan', 'Kuliner'];
 
-export default function Blog() {
+export default function Blog({ category }: { category?: 'tour' | 'outbound' }) {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('Semua');
@@ -190,7 +190,10 @@ export default function Blog() {
                       ))}
                     </div>
                     <button
-                      onClick={() => navigate(`/blog/${featured.id}`)}
+                      onClick={() => {
+                        const scope = window.location.pathname.startsWith('/outbound') ? '/outbound' : '/tour';
+                        navigate(`${scope}/blog/${featured.id}`);
+                      }}
                       className="flex items-center gap-2 text-toba-green font-black text-sm hover:gap-3 transition-all">
                       Baca <ArrowRight size={16} />
                     </button>
@@ -236,7 +239,10 @@ export default function Blog() {
                           ))}
                         </div>
                         <button
-                          onClick={() => navigate(`/blog/${post.id}`)}
+                          onClick={() => {
+                            const scope = window.location.pathname.startsWith('/outbound') ? '/outbound' : '/tour';
+                            navigate(`${scope}/blog/${post.id}`);
+                          }}
                           className="flex items-center gap-1.5 text-toba-green font-black text-xs hover:gap-2.5 transition-all">
                           Baca <ArrowRight size={14} />
                         </button>

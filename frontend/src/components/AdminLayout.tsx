@@ -6,7 +6,7 @@ import { useStore } from '../store/useStore';
 import { cn } from '../utils/cn';
 import { toast } from 'sonner';
 
-export default function AdminLayout() {
+export default function AdminLayout({ category = 'tour' }: { category?: 'tour' | 'outbound' }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const navigate = useNavigate();
@@ -26,14 +26,23 @@ export default function AdminLayout() {
     }
   };
 
-  const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
-    { icon: Package, label: 'Paket Wisata', path: '/admin/packages' },
-    { icon: MapPin, label: 'Wilayah', path: '/admin/cities' },
-    { icon: Car, label: 'Armada Mobil', path: '/admin/cars' },
-    { icon: BookOpen, label: 'Artikel & Blog', path: '/admin/blog' },
-    { icon: BookOpen, label: 'Pemesanan', path: '/admin/bookings' },
-    { icon: Users, label: 'Pengguna', path: '/admin/users' },
+  const basePath = category === 'outbound' ? '/admin/outbound' : '/admin/tour';
+  
+  const navItems = category === 'outbound' ? [
+    { icon: LayoutDashboard, label: 'Dashboard Outbound', path: `${basePath}` },
+    { icon: Package, label: 'Paket Outbound', path: `${basePath}/packages` },
+    { icon: MapPin, label: 'Lokasi Venue', path: `${basePath}/cities` },
+    { icon: BookOpen, label: 'Artikel Outbound', path: `${basePath}/blog` },
+    { icon: BookOpen, label: 'Pemesanan', path: `${basePath}/bookings` },
+    { icon: Users, label: 'Pengguna', path: `${basePath}/users` },
+  ] : [
+    { icon: LayoutDashboard, label: 'Dashboard Tour', path: `${basePath}` },
+    { icon: Package, label: 'Paket Wisata', path: `${basePath}/packages` },
+    { icon: MapPin, label: 'Wilayah Tour', path: `${basePath}/cities` },
+    { icon: Car, label: 'Armada Mobil', path: `${basePath}/cars` },
+    { icon: BookOpen, label: 'Artikel Blog', path: `${basePath}/blog` },
+    { icon: BookOpen, label: 'Pemesanan', path: `${basePath}/bookings` },
+    { icon: Users, label: 'Pengguna', path: `${basePath}/users` },
   ];
 
   const NavLinks = ({ collapsed }: { collapsed: boolean }) => (
@@ -102,7 +111,7 @@ export default function AdminLayout() {
       )}>
         <div className="h-20 flex items-center justify-between px-6 border-b border-white/5 shrink-0">
           {isSidebarOpen ? (
-            <Link to="/admin" className="flex items-center space-x-3">
+            <Link to={basePath} className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-toba-green rounded-xl flex items-center justify-center text-white font-bold text-xl">W</div>
               <span className="font-bold text-xl tracking-tight">Wonderful<span className="text-toba-accent">Toba</span></span>
             </Link>
@@ -113,6 +122,16 @@ export default function AdminLayout() {
             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
+
+        {/* Scope Switcher */}
+        {isSidebarOpen && (
+          <div className="px-4 py-4 border-b border-white/5 shrink-0">
+            <div className="flex rounded-xl bg-slate-800 p-1">
+              <Link to="/admin/tour" className={cn("flex-1 text-center py-2 text-[11px] uppercase tracking-widest font-bold rounded-lg transition-all", category === 'tour' ? "bg-toba-green text-white shadow-md shadow-toba-green/20" : "text-slate-400 hover:text-white")}>Tour</Link>
+              <Link to="/admin/outbound" className={cn("flex-1 text-center py-2 text-[11px] uppercase tracking-widest font-bold rounded-lg transition-all", category === 'outbound' ? "bg-toba-green text-white shadow-md shadow-toba-green/20" : "text-slate-400 hover:text-white")}>Outbound</Link>
+            </div>
+          </div>
+        )}
         <NavLinks collapsed={!isSidebarOpen} />
       </aside>
 
@@ -122,7 +141,7 @@ export default function AdminLayout() {
         isMobileOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="h-20 flex items-center justify-between px-6 border-b border-white/5 shrink-0">
-          <Link to="/admin" onClick={() => setIsMobileOpen(false)} className="flex items-center space-x-3">
+          <Link to={basePath} onClick={() => setIsMobileOpen(false)} className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-toba-green rounded-xl flex items-center justify-center text-white font-bold text-xl">W</div>
             <span className="font-bold text-xl tracking-tight">Wonderful<span className="text-toba-accent">Toba</span></span>
           </Link>
@@ -130,6 +149,15 @@ export default function AdminLayout() {
             <X size={20} />
           </button>
         </div>
+        
+        {/* Mobile Scope Switcher */}
+        <div className="px-4 py-4 border-b border-white/5 shrink-0">
+          <div className="flex rounded-xl bg-slate-800 p-1">
+            <Link to="/admin/tour" onClick={() => setIsMobileOpen(false)} className={cn("flex-1 text-center py-2 text-[11px] uppercase tracking-widest font-bold rounded-lg transition-all", category === 'tour' ? "bg-toba-green text-white shadow-md shadow-toba-green/20" : "text-slate-400 hover:text-white")}>Tour</Link>
+            <Link to="/admin/outbound" onClick={() => setIsMobileOpen(false)} className={cn("flex-1 text-center py-2 text-[11px] uppercase tracking-widest font-bold rounded-lg transition-all", category === 'outbound' ? "bg-toba-green text-white shadow-md shadow-toba-green/20" : "text-slate-400 hover:text-white")}>Outbound</Link>
+          </div>
+        </div>
+
         <NavLinks collapsed={false} />
       </aside>
 

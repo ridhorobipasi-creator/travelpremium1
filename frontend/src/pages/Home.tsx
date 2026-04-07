@@ -6,7 +6,7 @@ import { MapPin, Star, ArrowRight, Shield, Clock, Heart, Globe, Award, Compass, 
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import api from '../lib/api';
-import { fallbackPackages } from '../utils/fallbackData';
+import { fallbackPackages, fallbackBlogs } from '../utils/fallbackData';
 
 const testimonials = [
   {
@@ -56,34 +56,7 @@ export default function Home() {
         <title>Wonderful Toba – Wisata Sumatera Utara</title>
         <meta name="description" content="Temukan keindahan Danau Toba, Samosir, Berastagi, Tangkahan, dan Bukit Lawang bersama Wonderful Toba. Paket wisata dan rental mobil terpercaya di Sumatera Utara." />
       </Helmet>
-      <Hero />
       <HeroSlider />
-
-      {/* Stats Section */}
-      <section className="py-20 bg-slate-900 text-white overflow-hidden relative">
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-toba-green rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-toba-accent rounded-full blur-3xl" />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
-            {[
-              { label: 'Happy Travelers', value: '150k+', icon: Heart },
-              { label: 'Destinasi', value: '50+', icon: MapPin },
-              { label: 'Tahun Pengalaman', value: '15+', icon: Award },
-              { label: 'Paket Wisata', value: '100+', icon: Compass },
-            ].map((stat, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-toba-green/20 rounded-xl text-toba-green mb-4">
-                  <stat.icon size={24} />
-                </div>
-                <h3 className="text-4xl font-black mb-2 tracking-tight">{stat.value}</h3>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Featured Packages */}
       <section className="py-24">
@@ -205,6 +178,41 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Blog & News Section */}
+      <section className="py-24 bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+            <div className="max-w-2xl">
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="h-px w-8 bg-toba-green" />
+                <span className="text-toba-green font-black text-xs uppercase tracking-[0.3em]">Wawasan & Artikel</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+                Jurnal <span className="text-toba-green">Perjalanan Kami</span>
+              </h2>
+            </div>
+            <Link to="/tour/blog" className="flex items-center space-x-3 text-sm font-black text-slate-900 uppercase tracking-widest hover:text-toba-green transition-colors group shrink-0">
+              <span>Semua Artikel</span>
+              <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center group-hover:bg-toba-green group-hover:text-white transition-all">
+                <ArrowRight size={18} />
+              </div>
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {fallbackBlogs.filter(b => b.category === 'tour').map((blog, i) => (
+              <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="group">
+                <div className="h-56 rounded-[2rem] overflow-hidden mb-6 shadow-md">
+                  <img src={blog.image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                </div>
+                <p className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-widest">{blog.date}</p>
+                <h3 className="text-xl font-bold text-slate-900 mb-3 leading-snug group-hover:text-toba-green transition-colors">{blog.title}</h3>
+                <p className="text-sm text-slate-500 line-clamp-2">{blog.excerpt}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4">
@@ -256,7 +264,7 @@ export default function Home() {
               Bergabunglah dengan ribuan wisatawan yang telah merasakan keajaiban Sumatera Utara bersama kami.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/packages" className="bg-toba-green text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:bg-toba-accent transition-all shadow-2xl shadow-toba-green/20">
+              <Link to="/tour/packages" className="bg-toba-green text-white px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:bg-toba-accent transition-all shadow-2xl shadow-toba-green/20">
                 Lihat Paket Wisata
               </Link>
               <Link to="/cars" className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-4 rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:bg-white/20 transition-all">

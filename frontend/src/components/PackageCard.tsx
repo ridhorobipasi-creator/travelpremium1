@@ -74,7 +74,10 @@ export default function PackageCard({ package: pkg, locationName }: PackageCardP
             </div>
           </div>
           <button
-            onClick={() => navigate(`/package/${(pkg as any).slug}`)}
+            onClick={() => {
+              const scope = window.location.pathname.startsWith('/outbound') ? '/outbound' : '/tour';
+              navigate(`${scope}/package/${(pkg as any).slug}`);
+            }}
             className="w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center hover:bg-blue-600 transition-all shadow-xl shadow-slate-200 group/btn"
             aria-label={`Lihat detail ${pkg.name}`}
           >

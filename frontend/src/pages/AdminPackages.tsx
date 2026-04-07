@@ -2,27 +2,33 @@ import { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { Package, City } from '../types';
 import { motion } from 'framer-motion';
-import { Plus, Edit2, Trash2, Search, Package as PackageIcon, Filter, MoreHorizontal, MapPin, Calendar, DollarSign, Star, Zap } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, Package as PackageIcon, Filter, MoreHorizontal, MapPin, Calendar, Star, Zap } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function AdminPackages() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [packages, setPackages] = useState<Package[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Determine category from URL (Priority: Scope-aware Dashboard)
+  const category = location.pathname.includes('/outbound') ? 'outbound' : 'tour';
+  const basePath = category === 'outbound' ? '/admin/outbound' : '/admin/tour';
+
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [category]); // Refetch when switching between Tour and Outbound
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const [pkgRes, cityRes] = await Promise.all([
-        api.get('/packages'),
+        // Pass scope to backend (Priority: Pemisahan Data)
+        api.get(`/packages?scope=${category}`),
         api.get('/cities')
       ]);
       setPackages(pkgRes.data);
@@ -57,12 +63,19 @@ export default function AdminPackages() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h2 className="text-4xl font-bold text-slate-900 tracking-tight mb-2">Manajemen Paket Wisata</h2>
-          <p className="text-slate-500 font-medium italic">"Berikan pengalaman tak terlupakan bagi wisatawan di setiap detiknya."</p>
+          <h2 className="text-4xl font-bold text-slate-900 tracking-tight mb-2">
+            Manajemen Paket {category === 'outbound' ? 'Outbound' : 'Tour'}
+          </h2>
+          <p className="text-slate-500 font-medium italic">
+            {category === 'outbound' ? '"Membangun tim yang solid melalui pengalaman luar biasa."' : '"Berikan pengalaman tak terlupakan bagi wisatawan di setiap detiknya."'}
+          </p>
         </div>
         <button
-          onClick={() => navigate('/admin/create-package')}
-          className="bg-obaja-blue text-white px-8 py-4 rounded-2xl font-bold flex items-center space-x-2 hover:bg-obaja-blue/90 transition-all shadow-xl shadow-blue-100 group"
+          onClick={() => navigate(`${basePath}/packages/create`)}
+          className={cn(
+            "text-white px-8 py-4 rounded-2xl font-bold flex items-center space-x-2 transition-all shadow-xl group",
+            category === 'outbound' ? "bg-toba-green hover:bg-toba-green/90 shadow-toba-green/20" : "bg-obaja-blue hover:bg-obaja-blue/90 shadow-blue-100"
+          )}
         >
           <Plus size={20} className="transition-transform group-hover:rotate-90" />
           <span>Tambah Paket Baru</span>
@@ -74,7 +87,7 @@ export default function AdminPackages() {
         {[
           { label: 'Total Paket', value: packages.length, icon: PackageIcon, color: 'text-blue-600', bg: 'bg-blue-50' },
           { label: 'Paket Populer', value: packages.filter(p => (p as any).is_featured).length, icon: Star, color: 'text-amber-500', bg: 'bg-amber-50' },
-          { label: 'Kota Destinasi', value: cities.length, icon: MapPin, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+          { label: 'Kota/Venue', value: cities.length, icon: MapPin, color: 'text-emerald-500', bg: 'bg-emerald-50' },
           { label: 'Update Masif', value: 'Today', icon: Zap, color: 'text-purple-500', bg: 'bg-purple-50' },
         ].map((stat, i) => (
           <div key={i} className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center space-x-4">
@@ -95,10 +108,10 @@ export default function AdminPackages() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input
             type="text"
-            placeholder="Cari paket atau wilayah..."
+            placeholder={`Cari paket ${category === 'outbound' ? 'outbound' : 'wisata'}...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-obaja-blue font-medium transition-all"
+            className="w-full pl-12 pr-4 py-3 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-toba-green/30 font-medium transition-all"
           />
         </div>
         <div className="flex items-center space-x-3 w-full md:w-auto">
@@ -119,7 +132,7 @@ export default function AdminPackages() {
             <thead>
               <tr className="bg-slate-50/50">
                 <th className="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Informasi Paket</th>
-                <th className="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Wilayah</th>
+                <th className="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Wilayah/Venue</th>
                 <th className="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Harga</th>
                 <th className="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Status</th>
                 <th className="px-8 py-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] text-right">Aksi</th>
@@ -130,8 +143,8 @@ export default function AdminPackages() {
                 <tr>
                   <td colSpan={5} className="px-8 py-20 text-center">
                     <div className="flex flex-col items-center">
-                      <div className="w-12 h-12 border-4 border-blue-100 border-t-obaja-blue rounded-full animate-spin mb-4"></div>
-                      <p className="text-slate-400 font-medium">Sinkronisasi data...</p>
+                      <div className={cn("w-12 h-12 border-4 rounded-full animate-spin mb-4", category === 'outbound' ? "border-toba-green/20 border-t-toba-green" : "border-blue-100 border-t-obaja-blue")}></div>
+                      <p className="text-slate-400 font-medium">Sinkronisasi data {category}...</p>
                     </div>
                   </td>
                 </tr>
@@ -146,19 +159,23 @@ export default function AdminPackages() {
                   <td className="px-8 py-6">
                     <div className="flex items-center space-x-5">
                       <div className="w-20 h-20 rounded-2xl overflow-hidden bg-slate-50 shrink-0 shadow-lg shadow-slate-200 group-hover:scale-105 transition-transform duration-500 relative">
-                        <img src={pkg.images?.[0] || 'https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&q=80&w=400'} alt="" className="w-full h-full object-cover" />
+                        <img 
+                          src={pkg.images?.[0] ? (pkg.images[0].startsWith('http') ? pkg.images[0] : `${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}/storage/${pkg.images[0]}`) : '/assets/images/placeholder.jpg'} 
+                          alt="" 
+                          className="w-full h-full object-cover" 
+                        />
                         {(pkg as any).is_featured && (
-                          <div className="absolute top-1 right-1 bg-amber-400 text-white p-1 rounded-lg">
+                          <div className="absolute top-1 right-1 bg-amber-400 text-white p-1 rounded-lg shadow-sm">
                             <Star size={10} fill="currentColor" />
                           </div>
                         )}
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900 text-lg group-hover:text-obaja-blue transition-colors line-clamp-1">{pkg.name}</p>
+                        <p className="font-bold text-slate-900 text-lg group-hover:text-toba-green transition-colors line-clamp-1">{pkg.name}</p>
                         <div className="flex items-center space-x-3 mt-1 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
-                          <span className="flex items-center gap-1.5"><Calendar size={12} className="text-blue-400" /> {pkg.duration}</span>
+                          <span className="flex items-center gap-1.5"><Calendar size={12} className="text-toba-green" /> {pkg.duration}</span>
                           <span className="w-1 h-1 bg-slate-200 rounded-full" />
-                          <span className="text-obaja-blue">Samosir</span>
+                          <span className="text-toba-green font-black">{pkg.scope?.toUpperCase()}</span>
                         </div>
                       </div>
                     </div>
@@ -169,7 +186,7 @@ export default function AdminPackages() {
                         <MapPin size={14} className="text-emerald-500" />
                       </div>
                       <span className="text-sm font-bold">
-                        {cities.find(c => c.id == (pkg as any).city_id || c.id == (pkg as any).cityId)?.name || 'Danau Toba'}
+                        {cities.find(c => c.id == (pkg as any).city_id || c.id == (pkg as any).cityId)?.name || 'N/A'}
                       </span>
                     </div>
                   </td>
@@ -193,8 +210,8 @@ export default function AdminPackages() {
                   <td className="px-8 py-6 text-right">
                     <div className="flex justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button 
-                        onClick={() => navigate(`/admin/edit-package/${pkg.id}`)} 
-                        className="p-3 text-slate-400 hover:text-obaja-blue hover:bg-blue-50 rounded-xl transition-all border border-transparent hover:border-blue-100"
+                        onClick={() => navigate(`${basePath}/packages/edit/${pkg.id}`)} 
+                        className="p-3 text-slate-400 hover:text-toba-green hover:bg-emerald-50 rounded-xl transition-all border border-transparent hover:border-emerald-100"
                         title="Detail Edit"
                       >
                         <Edit2 size={18} />
@@ -216,8 +233,8 @@ export default function AdminPackages() {
                       <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 text-slate-200">
                         <PackageIcon size={32} />
                       </div>
-                      <p className="text-slate-400 font-medium">Belum ada paket wisata.</p>
-                      <button onClick={() => navigate('/admin/create-package')} className="mt-4 text-obaja-blue font-bold hover:underline">
+                      <p className="text-slate-400 font-medium">Belum ada paket {category === 'outbound' ? 'outbound' : 'wisata'}.</p>
+                      <button onClick={() => navigate(`${basePath}/packages/create`)} className="mt-4 text-toba-green font-bold hover:underline">
                         Buat paket pertama
                       </button>
                     </div>

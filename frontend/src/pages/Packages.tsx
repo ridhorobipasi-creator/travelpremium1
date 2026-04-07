@@ -18,7 +18,7 @@ function matchDuration(duration: string, filter: string) {
   return true;
 }
 
-export default function Packages() {
+export default function Packages({ category }: { category?: 'tour' | 'outbound' }) {
   const [packages, setPackages] = useState<Package[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,12 +50,18 @@ export default function Packages() {
 
   const filteredPackages = packages
     .filter(p => {
+      // If we are in the Outbound scope, strictly show outbound category
+      // If we are in the Tour scope, rigorously show ONLY tour category or things without categories
+      const matchCategory = category === 'outbound' 
+        ? p.category === 'outbound'
+        : (p.category === 'tour' || !p.category);
+
       const matchCity = filterCity === 'all' || p.cityId === filterCity;
       const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description.toLowerCase().includes(searchQuery.toLowerCase());
       const matchDur = matchDuration(p.duration, filterDuration);
       const matchStatus = filterStatus === 'all' || p.status === filterStatus;
-      return matchCity && matchSearch && matchDur && matchStatus;
+      return matchCategory && matchCity && matchSearch && matchDur && matchStatus;
     })
     .sort((a, b) => {
       if (sortBy === 'price-asc') return a.price - b.price;

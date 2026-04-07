@@ -4,21 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class BookingController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index(Request $request)
     {
         $user = $request->user();
-
-        $query = Booking::with('user');
-
-        // If not logged in, return 401
         if (!$user) {
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        // Non-admin/staff only sees their own bookings
+        $query = Booking::with('user');
+
+        // Priority 1: Multi-Context Isolation
+        if ($request->scope) {
+            $query->where('scope', $request->scope);
+        }
+
+        // Priority 4: Role-Based Filtering
         if (!in_array($user->role, ['admin', 'staff'])) {
             $query->where('user_id', $user->id);
         }
@@ -34,6 +40,16 @@ class BookingController extends Controller
         return response()->json($query->latest()->get());
     }
 
+    public function show($id)
+    {
+        $booking = Booking::findOrFail($id);
+        
+        // Priority 4: Policy Enforcement
+        $this->authorize('view', $booking);
+        
+        return response()->json($booking->load('user'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -46,10 +62,11 @@ class BookingController extends Controller
             'customer_phone'  => 'required|string|min:8|max:20',
             'customer_email'  => 'required|email|max:255',
             'notes'           => 'nullable|string|max:1000',
+            'scope'           => 'required|in:tour,outbound',
         ]);
 
         $booking = Booking::create(array_merge($validated, [
-            'user_id' => $request->user()?->id, // Guest support
+            'user_id' => $request->user()?->id,
             'status'  => 'pending',
         ]));
 
@@ -59,16 +76,26 @@ class BookingController extends Controller
     public function update(Request $request, $id)
     {
         $booking = Booking::findOrFail($id);
+        
+        // Priority 4: Policy Enforcement for update
+        $this->authorize('update', $booking);
+
         $validated = $request->validate([
             'status' => 'required|in:pending,confirmed,cancelled',
         ]);
+        
         $booking->update($validated);
         return response()->json($booking->load('user'));
     }
 
     public function destroy($id)
     {
-        Booking::findOrFail($id)->delete();
+        $booking = Booking::findOrFail($id);
+        
+        // Priority 4: Only Admin can delete (Policy check)
+        $this->authorize('delete', $booking);
+
+        $booking->delete();
         return response()->json(['message' => 'Booking berhasil dihapus.']);
     }
 }

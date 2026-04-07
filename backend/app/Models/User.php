@@ -11,8 +11,12 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    /**
+     * Priority 2: Security Fix
+     * Removed 'role' from fillable to prevent Mass-Assignment in registration.
+     */
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'photo_url',
+        'name', 'email', 'password', 'photo_url',
     ];
 
     protected $hidden = [
@@ -23,6 +27,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'password' => 'hashed',
         ];
     }
 

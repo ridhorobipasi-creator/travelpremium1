@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, LogIn, Menu, X, Globe, Phone, Mail, LogOut, User, Lock, Eye, EyeOff } from 'lucide-react';
+import { Search, LogIn, Menu, X, Globe, Phone, Mail, LogOut, User, Lock, Eye, EyeOff, Moon, Sun } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
 import { cn } from '../utils/cn';
@@ -14,6 +14,7 @@ export default function Navbar() {
   const [formLoading, setFormLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
   const { user, setUser, setToken } = useStore();
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,6 +28,14 @@ export default function Navbar() {
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
+
+  const toggleDark = () => {
+    const html = document.documentElement;
+    const newVal = !isDark;
+    html.classList.toggle('dark', newVal);
+    setIsDark(newVal);
+    localStorage.setItem('wt-dark-mode', String(newVal));
+  };
 
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,29 +74,39 @@ export default function Navbar() {
     setIsMenuOpen(false);
   };
 
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Tour Packages', path: '/packages' },
-    { name: 'Car Rental', path: '/cars' },
-    { name: 'Blog', path: '/blog' },
+  type NavLink = { name: string; path: string; isExternal?: boolean };
+
+  const isOutbound = location.pathname.startsWith('/outbound');
+  const isDarkHeroPage = location.pathname === '/tour' || location.pathname === '/outbound' || location.pathname === '/tour/packages' || location.pathname === '/outbound/packages';
+  
+  const navLinks: NavLink[] = isOutbound ? [
+    { name: 'Tentang Kami', path: '/outbound#tentangkami' },
+    { name: 'Layanan', path: '/outbound#layanan' },
+    { name: 'Klien', path: '/outbound#klien' },
+    { name: 'Pricelist', path: '/outbound/packages' },
+    { name: 'Blog', path: '/outbound/blog' },
+  ] : [
+    { name: 'Tour Packages', path: '/tour/packages' },
+    { name: 'Car Rental', path: '/tour/cars' },
+    { name: 'Blog', path: '/tour/blog' },
   ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
       {/* Top Bar */}
       <div className={cn(
-        "bg-slate-900 text-white py-2 transition-all duration-300 overflow-hidden",
+        "hidden sm:block bg-slate-900 text-white py-2 transition-all duration-300 overflow-hidden",
         isScrolled ? "h-0 opacity-0" : "h-auto opacity-100"
       )}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-[11px] font-semibold tracking-wider uppercase">
           <div className="flex items-center space-x-6">
-            <a href="tel:+6281234567890" className="flex items-center hover:text-toba-accent transition-colors">
+            <a href="tel:+6281323888207" className="flex items-center hover:text-toba-accent transition-colors">
               <Phone size={12} className="mr-2" />
-              +62 812 3456 7890
+              +62 813-2388-8207
             </a>
-            <a href="mailto:info@wonderfultoba.com" className="flex items-center hover:text-toba-accent transition-colors">
+            <a href="mailto:outbound@wonderfultoba.com" className="flex items-center hover:text-toba-accent transition-colors">
               <Mail size={12} className="mr-2" />
-              info@wonderfultoba.com
+              outbound@wonderfultoba.com
             </a>
           </div>
           <div className="flex items-center space-x-6">
@@ -103,82 +122,119 @@ export default function Navbar() {
       <nav className={cn(
         "transition-all duration-300 border-b",
         isScrolled 
-          ? "bg-white/90 backdrop-blur-md py-3 shadow-lg border-slate-100" 
-          : "bg-white py-5 border-transparent"
+          ? "bg-white/95 backdrop-blur-md py-3 shadow-lg border-slate-100" 
+          : isDarkHeroPage 
+            ? "bg-transparent py-5 border-transparent" 
+            : "bg-white py-5 border-slate-100"
       )}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 lg:px-6 xl:px-8">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-3 group">
-              <div className="w-10 h-10 bg-toba-green rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg shadow-toba-green/20 group-hover:scale-105 transition-transform">
+            <Link to="/" className="flex items-center space-x-3 group w-auto shrink-0 mr-8">
+              <div className="w-12 h-12 bg-toba-green rounded-xl flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-toba-green/20 group-hover:scale-105 transition-transform shrink-0">
                 W
               </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-extrabold text-slate-900 leading-none tracking-tight">
-                  WONDERFUL <span className="text-toba-green">TOBA</span>
+              <div className="flex flex-col whitespace-nowrap">
+                <span className={cn(
+                  "text-xl font-extrabold leading-none tracking-tight transition-colors",
+                  (!isScrolled && isDarkHeroPage) ? "text-white" : "text-slate-900"
+                )}>
+                  WONDERFUL <span className="text-toba-green">TOBA</span> {isOutbound && <span className={(!isScrolled && isDarkHeroPage) ? "text-white" : "text-slate-900"}>OUTBOUND</span>}
                 </span>
-                <span className="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase mt-1">
-                  Sumatera Utara Travel Experience
+                <span className={cn(
+                  "hidden sm:block text-[10px] font-bold tracking-[0.25em] uppercase mt-1 transition-colors",
+                  (!isScrolled && isDarkHeroPage) ? "text-slate-300" : "text-slate-400"
+                )}>
+                  {isOutbound ? 'Provider Outbound Terbaik Sumut' : 'Sumatera Utara Travel Experience'}
                 </span>
               </div>
             </Link>
 
             {/* Desktop Nav */}
-            <div className="hidden lg:flex items-center space-x-10">
+            <div className="hidden lg:flex items-center space-x-8 shrink-0 w-max">
               {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={cn(
-                    "text-sm font-bold tracking-wide transition-all duration-200",
-                    location.pathname === link.path 
-                      ? "text-toba-green" 
-                      : "text-slate-600 hover:text-toba-green"
-                  )}
-                >
-                  {link.name}
-                </Link>
+                link.isExternal ? null : (
+                  <a
+                    key={link.path}
+                    href={link.path}
+                    className={cn(
+                      "font-bold tracking-wide transition-all duration-200 whitespace-nowrap text-sm",
+                      location.pathname === link.path 
+                        ? "text-toba-green" 
+                        : (!isScrolled && isDarkHeroPage) ? "text-white/80 hover:text-white drop-shadow-sm" : "text-slate-600 hover:text-toba-green"
+                    )}
+                  >
+                    {link.name}
+                  </a>
+                )
               ))}
             </div>
 
             {/* Desktop Actions */}
-            <div className="hidden lg:flex items-center space-x-6">
-              <button className="text-slate-400 hover:text-toba-green transition-colors" aria-label="Cari">
-                <Search size={20} />
+            <div className="hidden lg:flex items-center space-x-6 shrink-0 ml-8">
+              <a href="https://wa.me/6281323888207" target="_blank" rel="noreferrer" className={cn(
+                "px-5 py-2.5 rounded-full font-bold text-sm tracking-wide transition-all shadow-lg flex items-center space-x-2 whitespace-nowrap",
+                (!isScrolled && isDarkHeroPage) ? "bg-white text-toba-green hover:bg-slate-100" : "bg-toba-green text-white hover:bg-slate-900"
+              )}>
+                <Phone size={16} />
+                <span>HUBUNGI KAMI</span>
+              </a>
+
+              <div className={cn("h-6 w-px", (!isScrolled && isDarkHeroPage) ? "bg-white/20" : "bg-slate-200")} />
+
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDark}
+                className={cn(
+                  "p-2.5 rounded-xl transition-all",
+                  isDark ? "bg-slate-700 text-yellow-400 hover:bg-slate-600" :
+                  (!isScrolled && isDarkHeroPage) ? "bg-white/10 text-white hover:bg-white/20" :
+                  "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                )}
+                aria-label={isDark ? 'Mode Terang' : 'Mode Gelap'}
+                title={isDark ? 'Aktifkan Mode Terang' : 'Aktifkan Mode Gelap'}
+              >
+                {isDark ? <Sun size={18} /> : <Moon size={18} />}
               </button>
-              <div className="h-6 w-px bg-slate-200" />
+
               {user ? (
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-5">
                   {user.role !== 'user' && (
                     <Link
                       to="/admin"
-                      className="text-xs font-extrabold text-toba-green hover:text-toba-green/80 bg-toba-green/5 px-4 py-2 rounded-full transition-all"
+                      className={cn(
+                        "text-xs font-extrabold px-5 py-2.5 rounded-full transition-all whitespace-nowrap",
+                        (!isScrolled && isDarkHeroPage) ? "bg-white/10 text-white hover:bg-white/20" : "bg-toba-green/5 text-toba-green hover:bg-toba-green/10"
+                      )}
                     >
                       DASHBOARD
                     </Link>
                   )}
-                  <button
-                    onClick={() => navigate('/profile')}
-                    className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-slate-100 ring-offset-2 hover:ring-toba-green transition-all"
-                    aria-label="Profil saya"
-                  >
-                    <img src={user.photoURL || 'https://picsum.photos/seed/user/100'} alt="User" referrerPolicy="no-referrer" />
-                  </button>
-                  <button onClick={handleLogout} className="flex items-center space-x-1 text-xs font-bold text-slate-500 hover:text-rose-600 transition-colors" aria-label="Keluar">
-                    <LogOut size={16} />
-                  </button>
+                  <div className="flex items-center space-x-3">
+                    <button
+                      onClick={() => navigate('/profile')}
+                      className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-transparent hover:ring-toba-green transition-all shadow-sm"
+                      aria-label="Profil saya"
+                    >
+                      <img src={user.photoURL || 'https://picsum.photos/seed/user/100'} alt="User" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                    </button>
+                    <button onClick={handleLogout} className={cn("flex flex-col items-start transition-colors", (!isScrolled && isDarkHeroPage) ? "text-white/80 hover:text-white" : "text-slate-600 hover:text-rose-600")} aria-label="Keluar">
+                      <span className="text-xs font-bold leading-none mb-0.5">Logout</span>
+                      <span className="text-[9px] font-semibold uppercase opacity-70 leading-none">Keluar akun</span>
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <div className="flex items-center space-x-4">
-
-                  <button
-                    onClick={() => setShowLoginModal(true)}
-                    className="bg-toba-green text-white px-8 py-3 rounded-full text-sm font-bold hover:bg-slate-900 transition-all shadow-xl shadow-toba-green/20 flex items-center space-x-2"
-                  >
-                    <LogIn size={18} />
-                    <span>LOGIN</span>
-                  </button>
-                </div>
+                <button
+                  onClick={() => setShowLoginModal(true)}
+                  className={cn(
+                    "px-4 py-2 rounded-full text-sm font-bold flex items-center space-x-2 transition-all whitespace-nowrap",
+                    (!isScrolled && isDarkHeroPage) ? "text-white hover:text-toba-green bg-white/10 hover:bg-white" : "text-slate-600 hover:text-toba-green"
+                  )}
+                >
+                  <LogIn size={18} />
+                  <span>LOGIN / DAFTAR</span>
+                </button>
               )}
             </div>
 
@@ -186,7 +242,7 @@ export default function Navbar() {
             <div className="lg:hidden flex items-center">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 text-slate-600 hover:text-toba-green transition-colors"
+                className={cn("p-2 transition-colors", (!isScrolled && isDarkHeroPage) ? "text-white hover:text-toba-green" : "text-slate-600 hover:text-toba-green")}
                 aria-label={isMenuOpen ? 'Tutup menu' : 'Buka menu'}
               >
                 {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -199,18 +255,32 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="lg:hidden fixed inset-x-0 top-full bg-white border-t border-slate-100 p-6 space-y-4 shadow-2xl z-50">
             {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={cn(
-                  "block text-lg font-bold p-3 rounded-xl transition-all",
-                  location.pathname === link.path 
-                    ? "text-toba-green bg-toba-green/5" 
-                    : "text-slate-600 hover:bg-slate-50"
-                )}
-              >
-                {link.name}
-              </Link>
+              link.isExternal ? (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block text-lg font-bold p-3 rounded-xl transition-all text-toba-green bg-toba-green/10 text-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.name}
+                </a>
+              ) : (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={cn(
+                    "block text-lg font-bold p-3 rounded-xl transition-all",
+                    location.pathname === link.path 
+                      ? "text-toba-green bg-toba-green/5" 
+                      : "text-slate-600 hover:bg-slate-50"
+                  )}
+                >
+                  {link.name}
+                </a>
+              )
             ))}
 
             <div className="border-t border-slate-100 pt-4 space-y-3">

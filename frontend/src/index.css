@@ -15,7 +15,31 @@
   body {
     @apply text-slate-900 antialiased selection:bg-green-100 selection:text-green-900;
   }
+
+  /* Dark mode */
+  .dark body {
+    @apply bg-slate-950 text-white selection:bg-toba-green/30 selection:text-toba-green;
+  }
 }
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-transition {
+  animation: pageIn 0.4s ease forwards;
+}
+
 
 .glass-card {
   @apply bg-white/80 backdrop-blur-lg border border-white/20 shadow-xl;

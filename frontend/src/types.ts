@@ -34,6 +34,7 @@ export interface Package {
   excludes: string[];
   images: string[];
   status: 'active' | 'inactive';
+  category?: 'tour' | 'outbound';
 }
 
 export interface Car {

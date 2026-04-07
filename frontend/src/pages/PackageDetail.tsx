@@ -30,7 +30,8 @@ export default function PackageDetail() {
           setCity(data.city);
         }
       } catch {
-        navigate('/packages');
+        const scope = window.location.pathname.startsWith('/outbound') ? '/outbound' : '/tour';
+        navigate(`${scope}/packages`);
       } finally {
         setLoading(false);
       }
@@ -60,8 +61,11 @@ export default function PackageDetail() {
       <div className="bg-slate-50 min-h-screen pb-24 pt-24">
         <div className="max-w-6xl mx-auto px-4">
           {/* Back */}
-          <button onClick={() => navigate('/packages')} className="flex items-center gap-2 text-slate-500 hover:text-toba-green font-bold mb-8 transition-colors">
-            <ArrowLeft size={18} /> Kembali ke Paket Wisata
+          <button onClick={() => {
+            const scope = window.location.pathname.startsWith('/outbound') ? '/outbound' : '/tour';
+            navigate(`${scope}/packages`);
+          }} className="flex items-center gap-2 text-slate-500 hover:text-toba-green font-bold mb-8 transition-colors">
+            <ArrowLeft size={18} /> Kembali ke Daftar Paket
           </button>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">

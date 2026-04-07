@@ -93,7 +93,59 @@ export const fallbackPackages: any[] = [
     excludes: ['Tiket Pesawat ke Medan', 'Pengeluaran Pribadi', 'Tip Guide'],
     images: ['https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80&w=800'],
     status: 'active',
+    category: 'tour'
   },
+  {
+    id: 'outbound-1',
+    name: 'Corporate Team Building',
+    slug: 'corporate-team-building',
+    description: 'Program khusus dirancang untuk perusahaan yang ingin meningkatkan kerjasama tim, komunikasi, dan leadership di alam terbuka Danau Toba.',
+    price: 1500000,
+    duration: '2 Hari 1 Malam',
+    cityId: 'city-1',
+    location: 'Parapat & Samosir',
+    rating: 4.8,
+    image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&q=80&w=800',
+    includes: ['Penginapan', 'Fasilitator Utama', 'Makan 3x Sehari', 'Instruktur Outbound Profesional', 'Sertifikat Tim'],
+    excludes: ['Tiket Pesawat', 'Pengeluaran Pribadi'],
+    images: ['https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&q=80&w=800'],
+    status: 'active',
+    category: 'outbound'
+  },
+  {
+    id: 'outbound-2',
+    name: 'Jungle Survival Adventure',
+    slug: 'jungle-survival-adventure',
+    description: 'Ekspedisi mendebarkan menjelajahi hutan hujan tropis. Pelajari cara bertahan hidup, navigasi darat, dan kerjasama dalam kondisi ekstrim.',
+    price: 2100000,
+    duration: '3 Hari 2 Malam',
+    cityId: 'city-5',
+    location: 'Bukit Lawang',
+    rating: 4.9,
+    image: 'https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&q=80&w=800',
+    includes: ['Camp Hutan', 'Makan 3x Sehari', 'Peralatan Bertahan Hidup', 'Guide Ranger', 'Materi Outbound Ekstrem'],
+    excludes: ['Tiket Pesawat', 'Pengeluaran Pribadi'],
+    images: ['https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&q=80&w=800'],
+    status: 'active',
+    category: 'outbound'
+  },
+  {
+    id: 'outbound-3',
+    name: 'Fun Family Gathering',
+    slug: 'fun-family-gathering',
+    description: 'Aktivitas outbound ringan yang menyenangkan untuk keluarga besar atau komunitas. Cocok untuk semua umur dengan permainan interaktif.',
+    price: 450000,
+    duration: '1 Hari',
+    cityId: 'city-3',
+    location: 'Berastagi',
+    rating: 4.7,
+    image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=800',
+    includes: ['Tenda Istirahat', 'Makan Siang', 'Fasilitator Anak & Dewasa', 'Souvenir', 'Sesi Pertukaran Kado'],
+    excludes: ['Tiket PP Berastagi', 'Pengeluaran Tambahan'],
+    images: ['https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=800'],
+    status: 'active',
+    category: 'outbound'
+  }
 ];
 
 export const fallbackCars: any[] = [
@@ -102,4 +154,31 @@ export const fallbackCars: any[] = [
   { id: 'car-3', name: 'Toyota Innova Reborn', type: 'MPV', pricePerDay: 750000, status: 'available', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800', seats: 8, fuel: 'Solar', transmission: 'Manual', rating: 4.7 },
   { id: 'car-4', name: 'Honda CR-V', type: 'SUV', pricePerDay: 900000, status: 'available', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800', seats: 5, fuel: 'Bensin', transmission: 'Otomatis', rating: 4.8 },
   { id: 'car-5', name: 'Toyota Alphard', type: 'Luxury', pricePerDay: 2500000, status: 'available', image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800', seats: 7, fuel: 'Bensin', transmission: 'Otomatis', rating: 5.0 },
+];
+
+export const fallbackBlogs = [
+  {
+    id: 'blog-1',
+    title: '5 Alasan Mengapa Danau Toba Adalah Destinasi Sempurna untuk Outbound',
+    excerpt: 'Menyatukan keindahan alam dan fasilitas lengkap, Danau Toba selalu menjadi pilihan utama untuk team building korporasi.',
+    category: 'outbound',
+    image: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&q=80&w=800',
+    date: '12 Okt 2023',
+  },
+  {
+    id: 'blog-2',
+    title: 'Tips Memilih Paket Wisata Keluarga di Berastagi',
+    excerpt: 'Berastagi menawarkan suhu yang sejuk dan agrowisata yang menarik. Berikut cara memilih aktivitas yang ramah anak.',
+    category: 'tour',
+    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800',
+    date: '08 Sep 2023',
+  },
+  {
+    id: 'blog-3',
+    title: 'Pentingnya Certified First-Aider dalam Kegiatan Hutan',
+    excerpt: 'Standar keselamatan kami mewajibkan keberadaan ahli P3K di setiap aktivitas jungle trekking dan survival.',
+    category: 'outbound',
+    image: 'https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&q=80&w=800',
+    date: '21 Agu 2023',
+  }
 ];
